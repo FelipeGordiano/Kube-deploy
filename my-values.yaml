@@ -1,0 +1,130 @@
+# values.yaml completo e corrigido para Apache Superset 2.1.0
+
+# Configurações básicas
+nameOverride: ""
+fullnameOverride: "superset"
+
+# Configurações de segurança
+securityContext:
+  runAsUser: 1000
+  fsGroup: 1000
+secretEnv:
+  create: true
+
+# Configurações da imagem
+image:
+  repository: apache/superset
+  tag: 2.1.0
+  pullPolicy: IfNotPresent
+  command:
+    - "/bin/bash"
+    - "-c"
+  args:
+    - |
+      /usr/bin/docker-entrypoint.sh celery-worker &
+      /usr/bin/docker-entrypoint.sh celery-beat &
+      /usr/bin/docker-entrypoint.sh run-server
+
+# Dependências Python
+extraPipPackages:
+  - psycopg2-binary==2.9.9
+  - redis==4.5.4
+
+# Configuração do PostgreSQL
+postgresql:
+  enabled: true
+  auth:
+    username: superset
+    password: superset
+    database: superset
+    postgresPassword: superset
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+# Configuração do Redis
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 2Gi
+
+# Variáveis de ambiente (corrigido para formato de mapa)
+extraEnv:
+  SUPERSET_LOAD_EXAMPLES: "false"
+  SUPERSET_ENABLE_PROXY_FIX: "true"
+  SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://superset:superset@superset-postgresql:5432/superset"
+  CELERY_BROKER_URL: "redis://superset-redis-master:6379/0"
+  RESULTS_BACKEND: "redis://superset-redis-master:6379/0"
+
+# Secrets (já está correto como mapa)
+extraSecretEnv:
+  SUPERSET_SECRET_KEY: "qBD9T1ViKxwWd2BaDjdWbvur2lNyyhoZRfcy4HE/3l" # Gerar nova para produção!
+
+# Inicialização
+init:
+  enabled: true
+  createAdmin: true
+  adminUser:
+    username: admin
+    firstname: Admin
+    lastname: User
+    email: admin@superset.com
+    password: admin
+
+# Configuração do Worker Corrigida
+supersetWorker:
+  enabled: true
+  replicaCount: 1
+  command:
+    - celery
+    - --app=superset.tasks.celery_app:app
+    - worker
+    - --pool=prefork
+    - -O
+    - fair
+    - -c
+    - "4"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+# Configuração do Serviço Web
+service:
+  type: ClusterIP
+  port: 8088
+
+# Recursos
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+
+# Ingress (opcional)
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: superset.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Configurações adicionais
+nodeSelector: {}
+tolerations: []
+affinity: {}
