@@ -1,9 +1,27 @@
-# sgm-ia-roteirizacaovisitas
+# Apache Superset on Kubernetes (Local Development)
 
-Roteirização Inteligente de Vendedores - Maximizando Cobertura e Receita
-Visão Geral
-Este projeto visa otimizar a rotina dos vendedores ao criar itinerários que equilibrem:
+## Quick Deployment Guide
 
-Cobertura territorial (mais clientes atendidos em menos tempo).
-Maximização da receita (priorizando visitas com alto potencial de vendas).
-A solução combina análise de dados geoespaciais, otimização matemática e técnicas de machine learning para garantir que os vendedores alcancem seus objetivos operacionais e financeiros.
+### 1. Add the Superset Helm repository
+```bash
+helm repo add superset https://apache.github.io/superset
+helm repo update
+```
+
+### 2.Update values.yaml
+
+### 3. Install superset
+```bash
+helm upgrade --install superset -f values.yaml superset/superset
+```
+### 4. Connect cluster to localhost
+```bash
+# Superset web interface
+kubectl port-forward svc/superset 8088:8088
+
+# Redis
+kubectl port-forward superset-redis-master-0 6379:6379
+
+# Postgresql
+kubectl port-forward superset-postgresql-0 5432:5432
+```
