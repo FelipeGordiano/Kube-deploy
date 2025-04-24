@@ -66,3 +66,6 @@ venv/
 
 # MyPy
 .mypy_cache/
+
+# Superset screts
+superset-secreats.yaml
