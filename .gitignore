@@ -1,0 +1,68 @@
+# Diretórios e arquivos gerados pelo sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Dependências (node, Python, Java, etc.)
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Logs e bancos de dados
+*.log
+*.sql
+*.sqlite
+*.db
+
+# Arquivos de ambiente (.env, chaves, credenciais)
+.env
+.env.local
+*.key
+*.pem
+*.crt
+
+# IDEs e editores
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build e distribuição
+/dist/
+/build/
+/out/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.~*
+
+# Sistema operacional
+ehthumbs.db
+[Tt]humbs.db
+
+# Virtualenv
+venv/
+*.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# MyPy
+.mypy_cache/
